@@ -4,13 +4,9 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.system.MemoryStack;
-
-import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL33.*;
-import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
@@ -94,6 +90,12 @@ public class Window {
 
         // Make the window visible
         glfwShowWindow(windowHandle);
+
+        // Let the rendering process consider the distance of the rendered pixels for drawing order
+        glEnable(GL_DEPTH_TEST);
+
+        // Let to be drawn only the borders of the meshes
+        // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
     }
 
     public void setClearColor(float r, float g, float b, float a) {
@@ -118,6 +120,10 @@ public class Window {
 
     public int getHeight() {
         return height;
+    }
+
+    public long getWindowHandle() {
+        return windowHandle;
     }
 
     public boolean isResized() {

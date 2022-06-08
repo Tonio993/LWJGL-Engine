@@ -1,10 +1,5 @@
 package engine;
 
-import org.lwjgl.opengl.GL;
-
-import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
-import static org.lwjgl.glfw.GLFW.*;
-
 public class GameEngine implements Runnable {
 
     public static final int TARGET_FPS = 75;
@@ -14,12 +9,15 @@ public class GameEngine implements Runnable {
 
     private final Timer timer;
 
+    private final MouseInput mouseInput;
+
     private final IGameLogic gameLogic;
 
     public GameEngine(String windowTitle, int width, int height, boolean vSync, IGameLogic gameLogic) throws Exception {
         window = new Window(windowTitle, width, height, vSync);
         this.gameLogic = gameLogic;
         timer = new Timer();
+        mouseInput = new MouseInput();
     }
 
     @Override
@@ -37,6 +35,7 @@ public class GameEngine implements Runnable {
     private void init() throws Exception {
         window.init();
         timer.init();
+        mouseInput.init(window);
         gameLogic.init(window);
     }
 
@@ -53,7 +52,7 @@ public class GameEngine implements Runnable {
             input();
 
             while (accumulator >= interval) {
-                update(interval);
+                update(interval, mouseInput);
                 accumulator -= interval;
             }
 
@@ -82,11 +81,12 @@ public class GameEngine implements Runnable {
     }
 
     protected void input() {
-        gameLogic.input(window);
+        mouseInput.input(window);
+        gameLogic.input(window, mouseInput);
     }
 
-    protected void update(double interval) {
-        gameLogic.update(interval);
+    protected void update(float interval, MouseInput mouseInput) {
+        gameLogic.update(interval, mouseInput);
     }
 
     protected void render() {
