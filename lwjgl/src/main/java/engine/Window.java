@@ -96,6 +96,10 @@ public class Window {
 
         // Let to be drawn only the borders of the meshes
         // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+
+        // Support for transparencies
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     public void setClearColor(float r, float g, float b, float a) {

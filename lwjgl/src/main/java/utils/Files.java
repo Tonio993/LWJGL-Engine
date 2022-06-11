@@ -36,6 +36,14 @@ public final class Files {
         }
     }
 
+    public static byte[] bytes(String fileName) throws IOException {
+        InputStream fileInputStream = inputStream(fileName);
+        int bytes = fileInputStream.available();
+        byte[] bytesArray = new byte[bytes];
+        fileInputStream.read(bytesArray);
+        return bytesArray;
+    }
+
     public static String toString(InputStream is) {
         StringBuffer sb = new StringBuffer();
         forEachLine(is, line -> {

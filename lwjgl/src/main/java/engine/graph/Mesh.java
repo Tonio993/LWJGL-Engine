@@ -31,9 +31,14 @@ public class Mesh {
             vaoId = glGenVertexArrays();
             glBindVertexArray(vaoId);
 
-            posVboId = glGenBuffers();
-            glBindBuffer(GL_ARRAY_BUFFER, posVboId);
-            glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
+            // Position VBO
+            int vboId = glGenBuffers();
+            vboIdList.add(vboId);
+            posBuffer = MemoryUtil.memAllocFloat(positions.length);
+            posBuffer.put(positions).flip();
+            glBindBuffer(GL_ARRAY_BUFFER, vboId);
+            glBufferData(GL_ARRAY_BUFFER, posBuffer, GL_STATIC_DRAW);
+            glEnableVertexAttribArray(0);
             glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 
             // Texture coordinates VBO
@@ -111,11 +116,19 @@ public class Mesh {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         vboIdList.forEach(id -> glDeleteBuffers(id));
 
-        // Deleta the texture
-        Texture texture = material.getTexture();
-        if (texture != null) {
-            texture.cleanup();
-        }
+        // Delete the VAO
+        glBindVertexArray(0);
+        glDeleteVertexArrays(vaoId);
+    }
+
+    public void deleteBuffers() {
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
+
+        // Delete the VBOs
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        vboIdList.forEach(id -> glDeleteBuffers(id));
 
         // Delete the VAO
         glBindVertexArray(0);
