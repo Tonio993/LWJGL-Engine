@@ -1,6 +1,8 @@
-package engine.graph;
+package engine.items;
 
-import engine.GameItem;
+import engine.graph.FontTexture;
+import engine.graph.Material;
+import engine.graph.Mesh;
 import utils.Arrays;
 
 import java.util.ArrayList;

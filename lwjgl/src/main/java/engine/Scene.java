@@ -1,7 +1,8 @@
 package engine;
 
 import engine.graph.Mesh;
-import engine.graph.light.SceneLight;
+import engine.items.GameItem;
+import engine.items.SkyBox;
 
 import java.util.*;
 

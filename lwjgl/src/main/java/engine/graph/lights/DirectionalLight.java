@@ -1,4 +1,4 @@
-package engine.graph.light;
+package engine.graph.lights;
 
 import org.joml.Vector3f;
 

@@ -1,9 +1,10 @@
 package game;
 
-import engine.GameItem;
+import engine.items.GameItem;
 import engine.IHud;
 import engine.Window;
 import engine.graph.*;
+import engine.items.TextItem;
 import org.joml.Vector4f;
 
 import java.awt.*;

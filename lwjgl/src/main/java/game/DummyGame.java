@@ -1,9 +1,12 @@
 package game;
 
 import engine.*;
-import engine.graph.*;
-import engine.graph.light.DirectionalLight;
-import engine.graph.light.SceneLight;
+import engine.graph.Camera;
+import engine.graph.Renderer;
+import engine.graph.lights.DirectionalLight;
+import engine.items.GameItem;
+import engine.items.SkyBox;
+import engine.items.Terrain;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -46,44 +49,47 @@ public class DummyGame implements IGameLogic {
         // Setup GameItems
         float reflectance = 1f;
 
-        Mesh mesh = OBJLoader.loadMesh("assets/models/cube.obj");
-        Texture texture = new Texture("assets/textures/block.png");
-        Material material = new Material(texture, reflectance);
-        mesh.setMaterial(material);
+//        Mesh mesh = OBJLoader.loadMesh("assets/models/cube.obj");
+//        Texture texture = new Texture("assets/textures/block.png");
+//        Material material = new Material(texture, reflectance);
+//        mesh.setMaterial(material);
+//
+//        float blockScale = 0.5f;
+//        float skyBoxScale = 10.0f;
+//        float extension = 50.0f;
+//
+//        float startx = extension * (-skyBoxScale + blockScale);
+//        float startz = extension * (skyBoxScale - blockScale);
+//        float starty = -1.0f;
+//        float inc = blockScale * 2;
+//
+//        float posx = startx;
+//        float posz = startz;
+//        float incy = 0.0f;
+//        int NUM_ROWS = (int)(extension * skyBoxScale * 2 / inc);
+//        int NUM_COLS = (int)(extension * skyBoxScale * 2/ inc);
+//        GameItem[] gameItems  = new GameItem[NUM_ROWS * NUM_COLS];
+//        for(int i=0; i<NUM_ROWS; i++) {
+//            for(int j=0; j<NUM_COLS; j++) {
+//                GameItem gameItem = new GameItem(mesh);
+//                gameItem.setScale(blockScale);
+//                incy = Math.random() > 0.9f ? blockScale * 2 : 0f;
+//                gameItem.setPosition(posx, starty + incy, posz);
+//                gameItems[i*NUM_COLS + j] = gameItem;
+//
+//                posx += inc;
+//            }
+//            posx = startx;
+//            posz -= inc;
+//        }
 
-        float blockScale = 0.5f;
-        float skyBoxScale = 10.0f;
-        float extension = 50.0f;
+        Terrain terrain = new Terrain(3, 10, -0.1f, 0.1f, "assets/textures/heightmap.png", "assets/textures/terrain.png", 40);
 
-        float startx = extension * (-skyBoxScale + blockScale);
-        float startz = extension * (skyBoxScale - blockScale);
-        float starty = -1.0f;
-        float inc = blockScale * 2;
-
-        float posx = startx;
-        float posz = startz;
-        float incy = 0.0f;
-        int NUM_ROWS = (int)(extension * skyBoxScale * 2 / inc);
-        int NUM_COLS = (int)(extension * skyBoxScale * 2/ inc);
-        GameItem[] gameItems  = new GameItem[NUM_ROWS * NUM_COLS];
-        for(int i=0; i<NUM_ROWS; i++) {
-            for(int j=0; j<NUM_COLS; j++) {
-                GameItem gameItem = new GameItem(mesh);
-                gameItem.setScale(blockScale);
-                incy = Math.random() > 0.9f ? blockScale * 2 : 0f;
-                gameItem.setPosition(posx, starty + incy, posz);
-                gameItems[i*NUM_COLS + j] = gameItem;
-
-                posx += inc;
-            }
-            posx = startx;
-            posz -= inc;
-        }
-        scene.setGameItems(gameItems);
+        scene.setGameItems(terrain.getGameItems());
 
         // Setup SkyBox
         SkyBox skyBox = new SkyBox("assets/models/skybox.obj", "assets/textures/skybox.png");
-        skyBox.setScale(skyBoxScale);
+        skyBox.setScale(50.0f);
         scene.setSkyBox(skyBox);
 
         // Setup Lights
