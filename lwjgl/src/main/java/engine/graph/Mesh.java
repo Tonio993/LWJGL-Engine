@@ -1,6 +1,7 @@
 package engine.graph;
 
 import engine.items.GameItem;
+import org.lwjgl.opengl.GL33;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
@@ -97,6 +98,13 @@ public class Mesh {
             // Bind the texture
             glBindTexture(GL_TEXTURE_2D, texture.id);
         }
+        Texture normalMap = material.getNormalMap();
+        if ( normalMap != null ) {
+            // Activate first texture bank
+            glActiveTexture(GL_TEXTURE1);
+            // Bind the texture
+            glBindTexture(GL_TEXTURE_2D, normalMap.id);
+        }
 
         // Draw the mesh
         glBindVertexArray(vaoId);
@@ -145,7 +153,7 @@ public class Mesh {
 
         // Delete the VBO
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        vboIdList.forEach(id -> glDeleteBuffers(id));
+        vboIdList.forEach(GL33::glDeleteBuffers);
 
         // Delete the VAO
         glBindVertexArray(0);
@@ -159,7 +167,7 @@ public class Mesh {
 
         // Delete the VBOs
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        vboIdList.forEach(id -> glDeleteBuffers(id));
+        vboIdList.forEach(GL33::glDeleteBuffers);
 
         // Delete the VAO
         glBindVertexArray(0);

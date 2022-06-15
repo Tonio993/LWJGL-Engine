@@ -10,11 +10,11 @@ import java.util.List;
 
 public class HeightMapMesh {
 
-    private static final int MAX_COLOUR = 255 * 255 * 255;
+    private static final int MAX_COLOR = 255 * 255 * 255;
 
-    private static final float STARTX = -0.5f;
+    public static final float STARTX = -0.5f;
 
-    private static final float STARTZ = -0.5f;
+    public static final float STARTZ = -0.5f;
 
     public static final float LENGTH_X = Math.abs(STARTX) * 2;
 
@@ -26,16 +26,21 @@ public class HeightMapMesh {
 
     public final Mesh mesh;
 
+    public final Images.ImageInfo image;
+
+    private final float[][] heightArray;
+
     public HeightMapMesh(float minY, float maxY, String heightMapFile, String textureFile, int textInc) throws Exception {
         this.minY = minY;
         this.maxY = maxY;
 
         int width;
         int height;
-        Images.ImageInfo image = Images.load(heightMapFile);
+        image = Images.load(heightMapFile);
         width = image.width;
         height = image.height;
         ByteBuffer buf = image.buffer;
+        heightArray = new float[width][height];
 
         Texture texture = new Texture(textureFile);
 
@@ -48,9 +53,12 @@ public class HeightMapMesh {
 
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
+                float vertexHeight = getHeight(col, row, width, buf);
+                heightArray[row][col] = vertexHeight;
+
                 // Create vertex for current position
                 positions.add(STARTX + col * incx); // x
-                positions.add(getHeight(col, row, width, buf)); //y
+                positions.add(vertexHeight); //y
                 positions.add(STARTZ + row * incz); //z
 
                 // Set texture coordinates
@@ -170,13 +178,17 @@ public class HeightMapMesh {
     }
 
     private float getHeight(int x, int z, int width, ByteBuffer buffer) {
-        byte r = buffer.get(x * 4 + 0 + z * 4 * width);
+        byte r = buffer.get(x * 4 + z * 4 * width);
         byte g = buffer.get(x * 4 + 1 + z * 4 * width);
         byte b = buffer.get(x * 4 + 2 + z * 4 * width);
         byte a = buffer.get(x * 4 + 3 + z * 4 * width);
         int argb = ((0xFF & a) << 24) | ((0xFF & r) << 16)
                 | ((0xFF & g) << 8) | (0xFF & b);
-        return this.minY + Math.abs(this.maxY - this.minY) * ((float) argb / (float) MAX_COLOUR);
+        return this.minY + Math.abs(this.maxY - this.minY) * ((float) argb / (float) MAX_COLOR);
+    }
+
+    public float getHeight(int row, int col) {
+        return heightArray[row][col];
     }
 
 }

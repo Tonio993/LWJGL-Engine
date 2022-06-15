@@ -54,6 +54,7 @@ public class Renderer {
         sceneShaderProgram.createUniform("projectionMatrix");
         sceneShaderProgram.createUniform("modelViewMatrix");
         sceneShaderProgram.createUniform("texture_sampler");
+        sceneShaderProgram.createUniform("normalMap");
 
         // Create uniform for material
         sceneShaderProgram.createMaterialUniform("material");
@@ -64,6 +65,9 @@ public class Renderer {
         sceneShaderProgram.createPointLightListUniform("pointLights", 5);
         sceneShaderProgram.createSpotLightListUniform("spotLights", 5);
         sceneShaderProgram.createDirectionalLightUniform("directionalLight");
+
+        // Create weather uniforms
+        sceneShaderProgram.createFogUniform("fog");
     }
 
     public void setupHudShader() throws Exception {
@@ -72,7 +76,7 @@ public class Renderer {
         hudShaderProgram.createFragmentShader(Files.read("shaders/hud.fsh"));
         hudShaderProgram.link();
 
-        // Create uniforms for Ortographic-model proection matrix and base colour
+        // Create uniforms for Ortographic-model proection matrix and base color
         hudShaderProgram.createUniform("projModelMatrix");
         hudShaderProgram.createUniform("color");
         hudShaderProgram.createUniform("hasTexture");
@@ -108,7 +112,7 @@ public class Renderer {
 
         renderScene(window, camera, scene);
 
-        renderSkyBox(window, camera, scene);
+        renderSkyBox(window, scene);
 
         renderHud(window, hud);
     }
@@ -126,7 +130,10 @@ public class Renderer {
 
         renderLights(viewMatrix, scene.getSceneLight());
 
+        sceneShaderProgram.setUniform("fog", scene.getFog());
+
         sceneShaderProgram.setUniform("texture_sampler", 0);
+        sceneShaderProgram.setUniform("normalMap", 1);
         // Render each gameItem
         for(Mesh mesh : scene.getMeshes()) {
             sceneShaderProgram.setUniform("material", mesh.getMaterial());
@@ -204,7 +211,10 @@ public class Renderer {
         hudShaderProgram.unbind();
     }
 
-    private void renderSkyBox(Window window, Camera camera, Scene scene) {
+    private void renderSkyBox(Window window, Scene scene) {
+        if (scene.getSkyBox() == null) {
+            return;
+        }
         skyBoxShaderProgram.bind();
 
         skyBoxShaderProgram.setUniform("texture_sampler", 0);

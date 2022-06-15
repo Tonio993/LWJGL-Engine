@@ -1,6 +1,7 @@
 package engine;
 
 import engine.graph.Mesh;
+import engine.graph.weather.Fog;
 import engine.items.GameItem;
 import engine.items.SkyBox;
 
@@ -16,12 +17,11 @@ public class Scene {
 
     private Map<Mesh, List<GameItem>> meshMap;
 
+    private Fog fog;
+
     public Scene() {
         this.meshMap = new HashMap<>();
-    }
-
-    public GameItem[] getGameItems() {
-        return gameItems;
+        this.fog = Fog.NOFOG;
     }
 
     public void setGameItems(GameItem[] gameItems) {
@@ -29,14 +29,14 @@ public class Scene {
         for (int i = 0; i < numGameItems; i++) {
             GameItem gameItem = gameItems[i];
             Mesh mesh = gameItem.getMesh();
-            List<GameItem> list = meshMap.get(mesh);
-            if(list == null) {
-                list = new ArrayList<>();
-                meshMap.put(mesh, list);
-            }
+            List<GameItem> list = meshMap.computeIfAbsent(mesh, k -> new ArrayList<>());
             list.add(gameItem);
         }
         this.gameItems = gameItems;
+    }
+
+    public GameItem[] getGameItems() {
+        return gameItems;
     }
 
     public SkyBox getSkyBox() {
@@ -61,5 +61,13 @@ public class Scene {
 
     public List<GameItem> getGameItemList(Mesh mesh) {
         return this.meshMap.get(mesh);
+    }
+
+    public Fog getFog() {
+        return fog;
+    }
+
+    public void setFog(Fog fog) {
+        this.fog = fog;
     }
 }
